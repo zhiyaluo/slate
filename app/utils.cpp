@@ -89,3 +89,12 @@ void Utils::strokeRectWithDashes(QPainter *painter, const QRect &rect)
 
     painter->restore();
 }
+
+QImage Utils::rotateImage(const QImage &image, int degrees)
+{
+    QTransform rotationTransform;
+    rotationTransform.translate(image.width() / 2, image.height() / 2);
+    rotationTransform.rotate(degrees, Qt::ZAxis);
+    rotationTransform.translate(-image.width() / 2, -image.height() / 2);
+    return image.transformed(rotationTransform);
+}

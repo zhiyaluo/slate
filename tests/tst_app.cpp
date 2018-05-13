@@ -105,6 +105,7 @@ private Q_SLOTS:
     void selectionEdgePan_data();
     void selectionEdgePan();
     void panThenMoveSelection();
+    void rotateSelection();
 
     void fillImageCanvas_data();
     void fillImageCanvas();
@@ -2710,6 +2711,11 @@ void tst_App::panThenMoveSelection()
 
     // Release to finish up.
     QTest::mouseRelease(window, Qt::LeftButton, Qt::NoModifier, cursorWindowPos);
+}
+
+void tst_App::rotateSelection()
+{
+
 }
 
 void tst_App::fillImageCanvas_data()

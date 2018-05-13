@@ -44,6 +44,7 @@
 #include "moveguidecommand.h"
 #include "pasteimagecanvascommand.h"
 #include "project.h"
+#include "rotateimagecanvasselectioncommand.h"
 #include "tileset.h"
 #include "utils.h"
 
@@ -1619,6 +1620,22 @@ void ImageCanvas::flipSelection(Qt::Orientation orientation)
     }
 }
 
+void ImageCanvas::rotateSelection(int degrees)
+{
+    if (!mHasSelection)
+        return;
+
+    if (!mIsSelectionFromPaste) {
+        mProject->beginMacro(QLatin1String("RotateSelection"));
+        mProject->addChange(new RotateImageCanvasSelectionCommand(this, mSelectionArea, degrees));
+        mProject->endMacro();
+    } else {
+        mSelectionContents = Utils::rotateImage(mSelectionContents, degrees);
+        updateSelectionPreviewImage();
+        update();
+    }
+}
+
 void ImageCanvas::copySelection()
 {
     if (!mHasSelection)
@@ -1954,6 +1971,15 @@ void ImageCanvas::doFlipSelection(const QRect &area, Qt::Orientation orientation
         .mirrored(orientation == Qt::Horizontal, orientation == Qt::Vertical);
     erasePortionOfImage(area);
     paintImageOntoPortionOfImage(area, flippedImagePortion);
+}
+
+void ImageCanvas::doRotateSelection(const QRect &area, int degrees)
+{
+    QImage rotatedImagePortion = currentProjectImage()->copy(area);
+    rotatedImagePortion = Utils::rotateImage(rotatedImagePortion, degrees);
+
+    erasePortionOfImage(area);
+    paintImageOntoPortionOfImage(area, rotatedImagePortion);
 }
 
 QPointF ImageCanvas::linePoint1() const

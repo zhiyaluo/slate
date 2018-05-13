@@ -17,34 +17,34 @@
     along with Slate. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef UTILS_H
-#define UTILS_H
+#ifndef ROTATEIMAGECANVASSELECTIONCOMMAND_H
+#define ROTATEIMAGECANVASSELECTIONCOMMAND_H
 
 #include <QDebug>
-#include <QImage>
 #include <QRect>
+#include <QtUndo/undocommand.h>
 
-namespace Utils {
-    QImage rotate(const QImage &image, int angle);
+class ImageCanvas;
 
-    QImage paintImageOntoPortionOfImage(const QImage &image, const QRect &portion, const QImage &replacementImage);
+class RotateImageCanvasSelectionCommand : public UndoCommand
+{
+    Q_OBJECT
 
-    QImage replacePortionOfImage(const QImage &image, const QRect &portion, const QImage &replacementImage);
+public:
+    RotateImageCanvasSelectionCommand(ImageCanvas *canvas, const QRect &area,
+        int degrees, UndoCommand *parent = nullptr);
 
-    QImage erasePortionOfImage(const QImage &image, const QRect &portion);
+    void undo() override;
+    void redo() override;
 
-    void strokeRectWithDashes(QPainter *painter, const QRect &rect);
+    int id() const override;
 
-    QImage rotateImage(const QImage &image, int degrees);
+private:
+    friend QDebug operator<<(QDebug debug, const RotateImageCanvasSelectionCommand *command);
 
-    template<typename T>
-    QString enumToString(T enumValue)
-    {
-        QString string;
-        QDebug debug(&string);
-        debug << enumValue;
-        return string;
-    }
-}
+    ImageCanvas *mCanvas;
+    int mDegrees;
+    QRect mArea;
+};
 
-#endif // UTILS_H
+#endif // ROTATEIMAGECANVASSELECTIONCOMMAND_H
