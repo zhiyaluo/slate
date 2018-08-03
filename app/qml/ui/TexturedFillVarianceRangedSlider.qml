@@ -17,7 +17,7 @@
     along with Slate. If not, see <http://www.gnu.org/licenses/>.
 */
 
-import QtQuick.Controls 2.5
+import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.3
 
 import App 1.0
@@ -52,11 +52,11 @@ RangeSlider {
     ToolTip {
         parent: root.first.handle
         visible: root.first.pressed
-        text: root.valueAt(first.position).toFixed(3)
+        text: root.first.value.toFixed(3)
     }
     ToolTip {
         parent: root.second.handle
         visible: root.second.pressed
-        text: root.valueAt(second.position).toFixed(3)
+        text: root.second.value.toFixed(3)
     }
 }

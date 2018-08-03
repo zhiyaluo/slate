@@ -1,5 +1,5 @@
 import QtQuick 2.11
-import QtQuick.Controls 2.5
+import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.3
 
 Button {
@@ -7,8 +7,6 @@ Button {
     checkable: true
     hoverEnabled: true
     focusPolicy: Qt.NoFocus
-    topInset: 0
-    bottomInset: 0
 
     property alias color: rect.color
 
