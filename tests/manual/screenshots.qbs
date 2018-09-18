@@ -1,12 +1,13 @@
 import qbs
 
 Project {
-    name: "app"
+    name: "screenshots"
     minimumQbsVersion: "1.7.1"
 
     CppApplication {
         Depends { name: "Qt.core" }
         Depends { name: "Qt.quick" }
+        Depends { name: "Qt.test" }
         Depends { name: "Qt.widgets" }
         Depends { name: "lib" }
 
@@ -28,14 +29,21 @@ Project {
             //"QT_DISABLE_DEPRECATED_BEFORE=0x060000" // disables all the APIs deprecated before Qt 6.0.0
         ]
 
+        cpp.includePaths: [
+            "../../app",
+            "../shared"
+        ]
+
         files: [
-            "application.h",
-            "application.cpp",
-            "main.cpp",
-            "config.qrc",
-            "fonts/fonts.qrc",
-            "images/images.qrc",
-            "qml/qml.qrc"
+            "../../app/application.h",
+            "../../app/application.cpp",
+            "../../app/fonts/fonts.qrc",
+            "../../app/images/images.qrc",
+            "../../app/qml/qml.qrc",
+            "../shared/testhelper.h",
+            "../shared/testhelper.cpp",
+            "../shared/testutils.h",
+            "screenshots.cpp"
         ]
 
         Group {     // Properties for the produced executable
