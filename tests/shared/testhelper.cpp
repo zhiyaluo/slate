@@ -402,31 +402,31 @@ bool TestHelper::changeToolSize(int size)
 {
     mouseEventOnCentre(toolSizeButton, MouseClick);
     const QObject *toolSizePopup = findPopupFromTypeName("ToolSizePopup");
-    VERIFY(toolSizePopup);
-    VERIFY(toolSizePopup->property("visible").toBool() == true);
+    QVERIFY_RETURN(toolSizePopup, false);
+    QCOMPARE_RETURN(toolSizePopup->property("visible").toBool(), true, false);
 
     QQuickItem *toolSizeSlider = toolSizePopup->findChild<QQuickItem*>("toolSizeSlider");
-    VERIFY(toolSizeSlider);
+    QVERIFY_RETURN(toolSizeSlider, false);
 
     QQuickItem *toolSizeSliderHandle = toolSizeSlider->property("handle").value<QQuickItem*>();
-    VERIFY(toolSizeSliderHandle);
+    QVERIFY_RETURN(toolSizeSliderHandle, false);
 
     // Move the slider to the right to find the max pos.
-    VERIFY(toolSizeSlider->setProperty("value", toolSizeSlider->property("to").toReal()));
-    VERIFY(toolSizeSlider->property("value") == toolSizeSlider->property("to"));
+    QVERIFY_RETURN(toolSizeSlider->setProperty("value", toolSizeSlider->property("to").toReal()), false);
+    QCOMPARE_RETURN(toolSizeSlider->property("value"), toolSizeSlider->property("to"), false);
     const QPoint handleMaxPos = toolSizeSliderHandle->mapToScene(
         QPointF(toolSizeSliderHandle->width() / 2, toolSizeSliderHandle->height() / 2)).toPoint();
 
     // Move/reset the slider to the left since we move from left to right.
-    VERIFY(toolSizeSlider->setProperty("value", toolSizeSlider->property("from").toReal()));
-    VERIFY(toolSizeSlider->property("value") == toolSizeSlider->property("from"));
+    QVERIFY_RETURN(toolSizeSlider->setProperty("value", toolSizeSlider->property("from").toReal()), false);
+    QCOMPARE_RETURN(toolSizeSlider->property("value"), toolSizeSlider->property("from"), false);
     const QPoint handleMinPos = toolSizeSliderHandle->mapToScene(
         QPointF(toolSizeSliderHandle->width() / 2, toolSizeSlider->height() / 2)).toPoint();
 
     QPoint sliderHandlePos = handleMinPos;
     QTest::mousePress(toolSizeSlider->window(), Qt::LeftButton, Qt::NoModifier, sliderHandlePos);
-    VERIFY(toolSizeSlider->property("pressed").toBool() == true);
-    VERIFY(window->mouseGrabberItem() == toolSizeSlider);
+    QCOMPARE_RETURN(toolSizeSlider->property("pressed").toBool(), true, false);
+    (window->mouseGrabberItem() == toolSizeSlider);
 
     QTest::mouseMove(toolSizeSlider->window(), sliderHandlePos, 5);
 
@@ -438,12 +438,12 @@ bool TestHelper::changeToolSize(int size)
     }
     --sliderHandlePos.rx();
     QTest::mouseRelease(toolSizeSlider->window(), Qt::LeftButton, Qt::NoModifier, sliderHandlePos);
-    VERIFY(toolSizeSlider->property("pressed").toBool() == false);
-    VERIFY(sliderValue(toolSizeSlider) == size);
+    QCOMPARE_RETURN(toolSizeSlider->property("pressed").toBool(), false, false);
+    QCOMPARE_RETURN(sliderValue(toolSizeSlider), size, false);
 
     // Close the popup.
     QTest::keyClick(window, Qt::Key_Escape);
-    VERIFY(toolSizePopup->property("visible").toBool() == false);
+    QTRY_COMPARE_RETURN(toolSizePopup->property("visible").toBool(), true, false);
 
     return true;
 }
@@ -458,17 +458,23 @@ bool TestHelper::changeToolShape(ImageCanvas::ToolShape toolShape)
     VERIFY(toolShapeMenu);
     TRY_VERIFY(toolShapeMenu->property("opened").toBool() == true);
 
+    // TODO: remove when d3545dbdfdb30e310c6c962ba92f4fdf57354666 is merged from 5.12.0 to dev
+    // Allow the menu's listview time to uncull its items
+    QTest::qWait(200);
+
     if (toolShape == ImageCanvas::SquareToolShape) {
         QQuickItem *squareToolShapeMenuItem = toolShapeMenu->findChild<QQuickItem*>("squareToolShapeMenuItem");
         VERIFY(squareToolShapeMenuItem);
 
         mouseEventOnCentre(squareToolShapeMenuItem, MouseClick);
+        TRY_VERIFY(toolShapeMenu->property("visible").toBool() == false);
         VERIFY(canvas->toolShape() == ImageCanvas::SquareToolShape);
     } else {
         QQuickItem *circleToolShapeMenuItem = toolShapeMenu->findChild<QQuickItem*>("circleToolShapeMenuItem");
         VERIFY(circleToolShapeMenuItem);
 
         mouseEventOnCentre(circleToolShapeMenuItem, MouseClick);
+        TRY_VERIFY(toolShapeMenu->property("visible").toBool() == false);
         VERIFY(canvas->toolShape() == ImageCanvas::CircleToolShape);
     }
 

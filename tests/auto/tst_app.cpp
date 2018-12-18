@@ -1598,7 +1598,17 @@ void tst_App::undoThickRoundPen()
 {
     QVERIFY2(createNewImageProject(), failureMessage);
 
-    QVERIFY2(changeToolSize(4), failureMessage);
+    // Will result in two failures, which works (and it's good that both the failure
+    // location and the helper call location are hyperlinked) but is a bit misleading.
+//    QVERIFY(changeToolSize(4));
+
+    // Will result in one failure, but the helper call location is not hyperlinked.
+//    if (!changeToolSize(4))
+//        return;
+
+    // Only one failure, and both locations are hyperlinked.
+    QCHECK_RETURN(changeToolSize(4));
+
     QVERIFY2(changeToolShape(ImageCanvas::CircleToolShape), failureMessage);
 
     QImage expectedClickImage(":/resources/undoThickRoundPen-1.png");
