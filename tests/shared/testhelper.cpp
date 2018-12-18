@@ -443,7 +443,7 @@ bool TestHelper::changeToolSize(int size)
 
     // Close the popup.
     QTest::keyClick(window, Qt::Key_Escape);
-    QTRY_COMPARE_RETURN(toolSizePopup->property("visible").toBool(), true, false);
+    QTRY_COMPARE_RETURN(toolSizePopup->property("visible").toBool(), false, false);
 
     return true;
 }
