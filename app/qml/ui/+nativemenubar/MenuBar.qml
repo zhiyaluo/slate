@@ -380,8 +380,8 @@ Item {
                 text: qsTr("Show Rulers")
                 enabled: canvas
                 checkable: true
-                checked: settings.rulersVisible
-                onTriggered: settings.rulersVisible = checked
+                checked: canvas && canvas.rulersVisible
+                onTriggered: canvas.rulersVisible = checked
             }
 
             Platform.MenuItem {

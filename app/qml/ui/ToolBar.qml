@@ -422,14 +422,14 @@ ToolBar {
                 focusPolicy: Qt.NoFocus
                 hoverEnabled: true
                 checkable: true
-                checked: settings.rulersVisible
+                checked: canvas && canvas.rulersVisible
 
                 icon.source: "qrc:/images/show-rulers.png"
 
                 ToolTip.text: qsTr("Show rulers")
                 ToolTip.visible: hovered
 
-                onClicked: settings.rulersVisible = checked
+                onClicked: canvas.rulersVisible = checked
             }
 
             ToolButton {

@@ -171,7 +171,7 @@ Item {
     Shortcut {
         objectName: "rulersVisibleShortcut"
         sequence: settings.rulersVisibleShortcut
-        onActivated: settings.rulersVisible = !settings.rulersVisible
+        onActivated: canvas.rulersVisible = !canvas.rulersVisible
     }
 
     Shortcut {

@@ -425,11 +425,6 @@ void tst_App::saveAsAndLoad()
 
     QVERIFY2(createNewProject(projectType), failureMessage);
 
-    if (!canvas->rulersVisible()) {
-        QVERIFY2(triggerRulersVisible(), failureMessage);
-        QCOMPARE(canvas->rulersVisible(), true);
-    }
-
     if (!canvas->guidesVisible()) {
         QVERIFY2(triggerGuidesVisible(), failureMessage);
         QCOMPARE(canvas->guidesVisible(), true);
@@ -445,6 +440,12 @@ void tst_App::saveAsAndLoad()
     // Having this visible interferes with the rest of the test, and since I'm too lazy
     // to check why and it's not necessary to have it open, just close it.
     QVERIFY(swatchesPanel->setProperty("expanded", QVariant(false)));
+
+    // Temporarily show rulers so we can drag some guides out.
+    if (!canvas->rulersVisible()) {
+        QVERIFY2(triggerRulersVisible(), failureMessage);
+        QCOMPARE(canvas->rulersVisible(), true);
+    }
 
     QQuickItem *firstHorizontalRuler = canvas->findChild<QQuickItem*>("firstHorizontalRuler");
     QVERIFY(firstHorizontalRuler);
@@ -483,6 +484,10 @@ void tst_App::saveAsAndLoad()
     QVERIFY(qAbs(canvas->firstPane()->size() - 0.25) < 0.001);
     QVERIFY(qAbs(canvas->secondPane()->size() - 0.75) < 0.001);
 
+    // The default is true, so set it to false to test that it's serialised properly.
+    QVERIFY2(triggerRulersVisible(), failureMessage);
+    QCOMPARE(canvas->rulersVisible(), false);
+
     // Store the original offsets, etc.
     const QPoint firstPaneOffset = canvas->firstPane()->integerOffset();
     const int firstPaneZoomLevel = canvas->firstPane()->integerZoomLevel();
@@ -511,6 +516,7 @@ void tst_App::saveAsAndLoad()
     QCOMPARE(canvas->secondPane()->integerOffset(), secondPaneOffset);
     QCOMPARE(canvas->secondPane()->integerZoomLevel(), secondPaneZoomLevel);
     QCOMPARE(canvas->secondPane()->size(), secondPaneSize);
+    QCOMPARE(canvas->rulersVisible(), false);
 
     if (projectType == Project::LayeredImageType) {
         // Test that the save shortcut works by drawing and then saving.
@@ -2861,7 +2867,7 @@ void tst_App::rulersAndGuides()
     QVERIFY2(createNewProject(projectType), failureMessage);
 
     QVERIFY2(triggerRulersVisible(), failureMessage);
-    QCOMPARE(app.settings()->areRulersVisible(), true);
+    QCOMPARE(canvas->rulersVisible(), true);
 
     QQuickItem *firstHorizontalRuler = canvas->findChild<QQuickItem*>("firstHorizontalRuler");
     QVERIFY(firstHorizontalRuler);

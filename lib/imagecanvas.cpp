@@ -234,6 +234,11 @@ void ImageCanvas::setProject(Project *project)
             centrePanes();
         }
 
+        if (cachedProjectJson->contains("rulersVisible")) {
+            // The default is true, in which case we don't bother writing it.
+            setRulersVisible(false);
+        }
+
         setAcceptedMouseButtons(Qt::AllButtons);
         setAcceptHoverEvents(true);
         setCursor(Qt::BlankCursor);
@@ -1249,6 +1254,8 @@ void ImageCanvas::onReadyForWritingToJson(QJsonObject *projectJson)
         (*projectJson)["splitScreen"] = true;
     if (mSplitter.isEnabled())
         (*projectJson)["splitterLocked"] = true;
+    if (!rulersVisible())
+        (*projectJson)["rulersVisible"] = false;
 }
 
 void ImageCanvas::onAboutToBeginMacro(const QString &macroText)

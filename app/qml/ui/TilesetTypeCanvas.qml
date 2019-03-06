@@ -15,7 +15,6 @@ TileCanvas {
     checkerColour2: settings.checkerColour2
     gridVisible: settings.gridVisible
     gridColour: "#55000000"
-    rulersVisible: settings.rulersVisible
     guidesVisible: settings.guidesVisible
     guidesLocked: settings.guidesLocked
     splitColour: CanvasColours.splitColour

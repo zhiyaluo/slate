@@ -78,11 +78,9 @@ TestHelper::~TestHelper()
 
 void TestHelper::initTestCase()
 {
-    // Tests could have failed on the last run, so just enforce the default settings.
+    // Tests could have failed on the last run, so just enforce the default test settings.
     app.settings()->setGridVisible(app.settings()->defaultGridVisible());
     QVERIFY(app.settings()->isGridVisible());
-    app.settings()->setRulersVisible(false);
-    QVERIFY(!app.settings()->areRulersVisible());
     app.settings()->setGuidesLocked(false);
     QVERIFY(!app.settings()->areGuidesLocked());
 
@@ -919,10 +917,10 @@ bool TestHelper::deleteSwatchColour(int index)
 
 bool TestHelper::addNewGuide(Qt::Orientation orientation, int position)
 {
-    if (!app.settings()->areRulersVisible()) {
+    if (!canvas->rulersVisible()) {
         if (!triggerRulersVisible())
             return false;
-        VERIFY(app.settings()->areRulersVisible());
+        VERIFY(canvas->rulersVisible());
     }
 
     const bool horizontal = orientation == Qt::Horizontal;
@@ -1846,11 +1844,7 @@ bool TestHelper::updateVariables(bool isNewProject, Project::Type projectType)
         VERIFY(settings);
         settings->resetShortcutsToDefaults();
 
-        if (settings->areRulersVisible()) {
-            if (!triggerRulersVisible())
-                return false;
-            VERIFY(settings->areRulersVisible() == false);
-        }
+        canvas->setRulersVisible(false);
 
         cursorPos = QPoint();
         cursorWindowPos = QPoint();

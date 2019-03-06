@@ -39,7 +39,6 @@ class SLATE_EXPORT ApplicationSettings : public QSettings
     Q_PROPERTY(bool loadLastOnStartup READ loadLastOnStartup WRITE setLoadLastOnStartup NOTIFY loadLastOnStartupChanged)
     Q_PROPERTY(QStringList recentFiles READ recentFiles NOTIFY recentFilesChanged)
     Q_PROPERTY(bool gridVisible READ isGridVisible WRITE setGridVisible NOTIFY gridVisibleChanged)
-    Q_PROPERTY(bool rulersVisible READ areRulersVisible WRITE setRulersVisible NOTIFY rulersVisibleChanged)
     Q_PROPERTY(bool guidesVisible READ areGuidesVisible WRITE setGuidesVisible NOTIFY guidesVisibleChanged)
     Q_PROPERTY(bool guidesLocked READ areGuidesLocked WRITE setGuidesLocked NOTIFY guidesLockedChanged)
     Q_PROPERTY(bool scrollZoom READ scrollZoom WRITE setScrollZoom NOTIFY scrollZoomChanged)
@@ -108,10 +107,6 @@ public:
     bool isGridVisible() const;
     void setGridVisible(bool isGridVisible);
     bool defaultGridVisible() const;
-
-    bool areRulersVisible() const;
-    void setRulersVisible(bool rulersVisible);
-    bool defaultRulersVisible() const;
 
     bool areGuidesVisible() const;
     void setGuidesVisible(bool guidesVisible);
@@ -315,7 +310,6 @@ signals:
     void loadLastOnStartupChanged();
     void recentFilesChanged();
     void gridVisibleChanged();
-    void rulersVisibleChanged();
     void guidesVisibleChanged();
     void guidesLockedChanged();
     void scrollZoomChanged();

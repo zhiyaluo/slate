@@ -325,7 +325,7 @@ void tst_Screenshots::animation()
 
     // Turn on rulers and drag some guides out.
     QVERIFY2(triggerRulersVisible(), failureMessage);
-    QCOMPARE(app.settings()->areRulersVisible(), true);
+    QCOMPARE(canvas->rulersVisible(), true);
 
     for (int i = 1; i <= 5; ++i) {
         QVERIFY2(addNewGuide(Qt::Vertical, i * 36), qPrintable(
