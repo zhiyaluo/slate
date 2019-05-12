@@ -95,6 +95,7 @@ protected:
     void connectSignals() override;
     void disconnectSignals() override;
     void toolChange() override;
+    bool supportsLineTool() const override;
     bool supportsSelectionTool() const override;
 
     void onLoadedChanged() override;

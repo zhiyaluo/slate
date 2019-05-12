@@ -2763,7 +2763,7 @@ void tst_App::texturedFill()
 
 void tst_App::pixelLineToolImageCanvas_data()
 {
-    addImageProjectTypes();
+    addAllProjectTypes();
 }
 
 void tst_App::pixelLineToolImageCanvas()
@@ -2779,8 +2779,16 @@ void tst_App::pixelLineToolImageCanvas()
     QQuickItem *lineAngleLabel = window->findChild<QQuickItem*>("lineAngleLabel");
     QVERIFY(lineAngleLabel);
 
-    // Draw the start of the line.
     setCursorPosInScenePixels(0, 0);
+
+    const bool isTilesetProject = projectType == Project::TilesetType;
+    if (isTilesetProject) {
+        // Draw a tile so we can draw pixels on it.
+        QVERIFY2(drawTileAtCursorPos(), failureMessage);
+        QVERIFY2(switchMode(TileCanvas::PixelMode), failureMessage);
+    }
+
+    // Draw the start of the line.
     QVERIFY2(drawPixelAtCursorPos(), failureMessage);
     QCOMPARE(canvas->isLineVisible(), false);
     QCOMPARE(lineLengthLabel->isVisible(), false);
@@ -2789,29 +2797,45 @@ void tst_App::pixelLineToolImageCanvas()
     // Hold shift to start the line-drawing process and
     // get the line length/angle labels visible.
     QTest::keyPress(window, Qt::Key_Shift);
-    QCOMPARE(canvas->isLineVisible(), true);
-    QCOMPARE(lineLengthLabel->isVisible(), true);
-    QCOMPARE(lineAngleLabel->isVisible(), true);
-    QCOMPARE(lineLengthLabel->property("text").toString(), "0");
-    QCOMPARE(lineAngleLabel->property("text").toString(), "0.00");
+    QCOMPARE(canvas->isLineVisible(), !isTilesetProject);
+    QCOMPARE(lineLengthLabel->isVisible(), !isTilesetProject);
+    QCOMPARE(lineAngleLabel->isVisible(), !isTilesetProject);
+    if (!isTilesetProject) {
+        QCOMPARE(lineLengthLabel->property("text").toString(), "0");
+        QCOMPARE(lineAngleLabel->property("text").toString(), "0.00");
+    }
 
     // Draw the line itself.
     setCursorPosInScenePixels(2, 2);
     QTest::mouseMove(window, cursorWindowPos);
-    QCOMPARE(lineLengthLabel->property("text").toString(), "2");
-    QCOMPARE(lineAngleLabel->property("text").toString(), "315.00");
+    if (!isTilesetProject) {
+        QCOMPARE(lineLengthLabel->property("text").toString(), "2");
+        QCOMPARE(lineAngleLabel->property("text").toString(), "315.00");
+    }
     // For some reason there must be a delay in order for the shift modifier to work.
     QTest::mouseClick(window, Qt::LeftButton, Qt::NoModifier, cursorWindowPos, 100);
-    QCOMPARE(canvas->isLineVisible(), true);
-    QCOMPARE(lineLengthLabel->isVisible(), true);
-    QCOMPARE(lineAngleLabel->isVisible(), true);
+    QCOMPARE(canvas->isLineVisible(), !isTilesetProject);
+    QCOMPARE(lineLengthLabel->isVisible(), !isTilesetProject);
+    QCOMPARE(lineAngleLabel->isVisible(), !isTilesetProject);
     QTest::keyRelease(window, Qt::Key_Shift);
     QCOMPARE(canvas->isLineVisible(), false);
     QCOMPARE(lineLengthLabel->isVisible(), false);
     QCOMPARE(lineAngleLabel->isVisible(), false);
-    QCOMPARE(canvas->currentProjectImage()->pixelColor(0, 0), QColor(Qt::black));
-    QCOMPARE(canvas->currentProjectImage()->pixelColor(1, 1), QColor(Qt::black));
-    QCOMPARE(canvas->currentProjectImage()->pixelColor(2, 2), QColor(Qt::black));
+    if (!isTilesetProject) {
+        QCOMPARE(canvas->currentProjectImage()->pixelColor(0, 0), Qt::black);
+        QCOMPARE(canvas->currentProjectImage()->pixelColor(1, 1), Qt::black);
+        QCOMPARE(canvas->currentProjectImage()->pixelColor(2, 2), Qt::black);
+    } else {
+        const QImage originalImage = *tilesetProject->tileAt(cursorPos)->tileset()->image();
+        QCOMPARE(tilesetProject->tileAt(cursorPos)->pixelColor(0, 0), Qt::black);
+        QCOMPARE(tilesetProject->tileAt(cursorPos)->pixelColor(1, 1), originalImage.pixelColor(1, 1));
+        QCOMPARE(tilesetProject->tileAt(cursorPos)->pixelColor(2, 2), originalImage.pixelColor(2, 2));
+    }
+
+    if (isTilesetProject) {
+        // That's all we need to test for tileset projects.
+        return;
+    }
 
     // Undo the line.
     mouseEventOnCentre(undoButton, MouseClick);

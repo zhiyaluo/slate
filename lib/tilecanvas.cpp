@@ -223,6 +223,11 @@ void TileCanvas::toolChange()
     updateTilePenPreview();
 }
 
+bool TileCanvas::supportsLineTool() const
+{
+    return false;
+}
+
 bool TileCanvas::supportsSelectionTool() const
 {
     return false;

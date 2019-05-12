@@ -822,6 +822,9 @@ bool ImageCanvas::isAltPressed() const
 
 bool ImageCanvas::isLineVisible() const
 {
+    if (!supportsLineTool())
+        return false;
+
     // This check determines if a line should be rendered,
     // and also if the line info should be shown in the status bar.
     const Qt::MouseButton lastButtonPressed = mMouseButtonPressed == Qt::NoButton
@@ -2237,6 +2240,11 @@ QRect ImageCanvas::doRotateSelection(int layerIndex, const QRect &area, int angl
         setSelectionArea(rotatedArea);
     requestContentPaint();
     return area.united(rotatedArea);
+}
+
+bool ImageCanvas::supportsLineTool() const
+{
+    return true;
 }
 
 QPointF ImageCanvas::linePoint1() const

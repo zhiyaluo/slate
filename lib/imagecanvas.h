@@ -441,6 +441,7 @@ protected:
     void doFlipSelection(int layerIndex, const QRect &area, Qt::Orientation orientation);
     QRect doRotateSelection(int layerIndex, const QRect &area, int angle);
 
+    virtual bool supportsLineTool() const;
     QPointF linePoint1() const;
     QPointF linePoint2() const;
     QRect normalisedLineRect(const QPointF point1, const QPointF point2) const;
